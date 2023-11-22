@@ -1,5 +1,5 @@
 import { TextField, Button, Box } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   handleGroupInputChange,
   handleGroups,
@@ -8,7 +8,10 @@ import {
 const AddTodo = () => {
   const [groupValue, setGroupValue] = useState<string>("");
   const [groups, setGroups] = useState<string[]>([]);
-  console.log(groups);
+  useEffect(() => {
+    const groups = JSON.parse(localStorage.getItem("groups") || "[]");
+    setGroups(groups);
+  }, [groups]);
   return (
     <>
       <Box className="flex gap-12 border-2 border-sky-400 w-96 p-2 rounded-lg mt-10 place-items-top justify-between">
