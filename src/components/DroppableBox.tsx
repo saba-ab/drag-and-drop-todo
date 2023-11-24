@@ -2,19 +2,26 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useState, useEffect } from "react";
 import {
   handleDragEnd,
-  handleTodoInputChange,
-  handleTodosKeyDown,
+  handleCopyTodo,
+  handleDeleteTodo,
 } from "../utils/tools";
 import { GroupItems } from "../types/MainDataTypes";
-
+import TodoInput from "./TodoInput";
+import Todo from "./Todo";
 const DroppableBox = () => {
   const [groups, setGroups] = useState<GroupItems>([]);
-  const [todoValue, setTodoValue] = useState<string>("");
 
   useEffect(() => {
     const storedGroups = JSON.parse(localStorage.getItem("groups") || "[]");
     setGroups(storedGroups);
   }, [groups]);
+  const onDeleteTodo = (todoId: string, groupName: string) => {
+    handleDeleteTodo(todoId, groupName, groups, setGroups);
+  };
+
+  const onCopyTodo = (todoId: string, groupName: string) => {
+    handleCopyTodo(todoId, groupName, groups, setGroups);
+  };
   return (
     <div className="droppable-box text-slate-50 w-screen p-16 border-2 border-sky-400 m-8 h-screen">
       <DragDropContext
@@ -27,7 +34,7 @@ const DroppableBox = () => {
                 <div
                   {...provided.droppableProps}
                   ref={provided.innerRef}
-                  className="group p-6 border-2 border-sky-400 w-64 max-w-xs rounded-lg"
+                  className=" flex flex-col group p-6 border-2 border-sky-400 relative min-w-fit min-h-fit max-w-xs rounded-lg gap-3"
                 >
                   <h2 className="group-title text-teal-200">
                     {group.groupName}
@@ -45,28 +52,22 @@ const DroppableBox = () => {
                           {...provided.dragHandleProps}
                           className="todo"
                         >
-                          {item.content}
+                          <Todo
+                            text={item.content}
+                            id={item.id}
+                            groupName={group.groupName}
+                            onDeleteTodo={onDeleteTodo}
+                            onCopy={onCopyTodo}
+                          />
                         </div>
                       )}
                     </Draggable>
                   ))}
                   {provided.placeholder}
-                  <input
-                    style={{ width: "100%", color: "black" }}
-                    type="text"
-                    onChange={(e) => handleTodoInputChange(e, setTodoValue)}
-                    onKeyDown={(e) =>
-                      handleTodosKeyDown(
-                        e,
-                        todoValue,
-                        groups,
-                        setGroups,
-                        setTodoValue,
-                        group.groupName
-                      )
-                    }
-                    value={todoValue}
-                    className="todo-input"
+                  <TodoInput
+                    groups={groups}
+                    setGroups={setGroups}
+                    groupName={group.groupName}
                   />
                 </div>
               )}

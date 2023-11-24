@@ -1,6 +1,7 @@
 import React, { ChangeEvent, Dispatch, SetStateAction } from "react";
 import { DropResult } from "react-beautiful-dnd";
 import { v4 as uuidv4 } from "uuid";
+import { GroupItems } from "../types/MainDataTypes";
 export const handleGroupInputChange = (
   e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   setGroupValue: React.Dispatch<React.SetStateAction<string>>
@@ -132,4 +133,53 @@ export const handleTodosKeyDown = (
     handleTodos(todoValue, groups, setGroups, setTodoValue, groupName);
     setTodoValue("");
   }
+};
+export const handleCopyTodo = (
+  todoId: string,
+  groupName: string,
+  groups: GroupItems,
+  setGroups: React.Dispatch<React.SetStateAction<GroupItems>>
+) => {
+  const newGroups = groups.map((group) => {
+    if (group.groupName === groupName) {
+      const index = group.items.findIndex((item) => item.id === todoId);
+      if (index !== -1) {
+        const newTodo = {
+          id: uuidv4(),
+          content: group.items[index].content,
+        };
+
+        const newItems = [...group.items];
+        newItems.splice(index + 1, 0, newTodo);
+
+        return {
+          ...group,
+          items: newItems,
+        };
+      }
+    }
+    return group;
+  });
+
+  setGroups(newGroups);
+  localStorage.setItem("groups", JSON.stringify(newGroups));
+};
+export const handleDeleteTodo = (
+  todoId: string,
+  groupName: string,
+  groups: GroupItems,
+  setGroups: React.Dispatch<React.SetStateAction<GroupItems>>
+) => {
+  const newGroups = groups.map((group) => {
+    if (group.groupName === groupName) {
+      return {
+        ...group,
+        items: group.items.filter((item) => item.id !== todoId),
+      };
+    }
+    return group;
+  });
+
+  setGroups(newGroups);
+  localStorage.setItem("groups", JSON.stringify(newGroups));
 };
