@@ -32,12 +32,17 @@ export const handleGroupsKeyDown = (
   setGroupValue: React.Dispatch<React.SetStateAction<string>>,
   groupNames: string[]
 ) => {
-  if (groupNames.includes(groupValue.trim())) {
-    alert("Group name already exists");
-    setGroupValue("");
-    return;
-  }
   if (e.key === "Enter") {
+    if (groupNames.length >= 10 && e.key === "Enter") {
+      alert("You can only have 10 groups");
+      setGroupValue("");
+      return;
+    }
+    if (groupNames.includes(groupValue.trim()) && e.key === "Enter") {
+      alert("Group name already exists");
+      setGroupValue("");
+      return;
+    }
     handleGroups(groupValue, groups, setGroups, setGroupValue);
   }
 };
@@ -64,11 +69,9 @@ export const handleDragEnd = (
   let newGroups = Array.from(groups);
 
   if (type === "DEFAULT") {
-    // Handling group reordering
     const [reorderedGroup] = newGroups.splice(source.index, 1);
     newGroups.splice(destination.index, 0, reorderedGroup);
   } else {
-    // Handling todo reordering
     const sourceGroupIndex = newGroups.findIndex(
       (group) => group.groupName === source.droppableId
     );
@@ -79,26 +82,20 @@ export const handleDragEnd = (
     if (sourceGroupIndex === -1 || destinationGroupIndex === -1) return;
 
     if (source.droppableId === destination.droppableId) {
-      // Reordering within the same group
       const sourceItems = Array.from(newGroups[sourceGroupIndex].items);
       const [reorderedItem] = sourceItems.splice(source.index, 1);
       sourceItems.splice(destination.index, 0, reorderedItem);
-
       newGroups[sourceGroupIndex].items = sourceItems;
     } else {
-      // Moving between groups
       const sourceItems = Array.from(newGroups[sourceGroupIndex].items);
       const destItems = Array.from(newGroups[destinationGroupIndex].items);
       const [movedItem] = sourceItems.splice(source.index, 1);
-
       destItems.splice(destination.index, 0, movedItem);
-
       newGroups[sourceGroupIndex].items = sourceItems;
       newGroups[destinationGroupIndex].items = destItems;
     }
   }
 
-  // Update the state and the localStorage
   setGroups(newGroups);
   localStorage.setItem("groups", JSON.stringify(newGroups));
   console.log(result);
