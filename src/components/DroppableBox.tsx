@@ -5,7 +5,6 @@ import {
   handleCopyTodo,
   handleDeleteTodo,
 } from "../utils/tools";
-import { GroupItems } from "../types/MainDataTypes";
 import { Groups } from "../utils/tools";
 import TodoInput from "./TodoInput";
 import Todo from "./Todo";
@@ -33,7 +32,7 @@ const DroppableBox = () => {
   };
 
   return (
-    <div className="droppable-box text-slate-50 w-screen p-16 border-2 border-sky-400 m-8 h-screen">
+    <div className="droppable-box text-slate-50 w-full p-16 border-2 border-sky-400 m-8 h-screen">
       <DragDropContext
         onDragEnd={(result) => handleDragEnd(result, groups, setGroups)}
       >
