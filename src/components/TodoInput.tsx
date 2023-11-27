@@ -36,7 +36,6 @@ const TodoInput = ({ groups, setGroups, groupName }: TodoInputProps) => {
         className="todo-input bg-teal-200 rounded-lg w-full absolute bottom-0"
         label="Todo"
         id="outlined-size-small"
-        defaultValue="Small"
         size="small"
         value={todoValue}
         onChange={handleChange}

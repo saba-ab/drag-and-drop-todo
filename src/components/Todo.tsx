@@ -11,6 +11,10 @@ interface TodoProps {
 }
 const Todo = ({ text, id, groupName, onDeleteTodo, onCopy }: TodoProps) => {
   const [groups, setGroups] = useState<GroupItems>([]);
+  const [isChecked, setIsChecked] = useState(false);
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsChecked(event.target.checked);
+  };
   useEffect(() => {
     const storedGroups = JSON.parse(localStorage.getItem("groups") || "[]");
     setGroups(storedGroups);
@@ -21,6 +25,8 @@ const Todo = ({ text, id, groupName, onDeleteTodo, onCopy }: TodoProps) => {
       <div className="check-text flex items-center gap-3">
         <Checkbox
           size="small"
+          checked={isChecked}
+          onChange={handleCheckboxChange}
           sx={{
             color: pink[800],
             "&.Mui-checked": {
@@ -28,7 +34,9 @@ const Todo = ({ text, id, groupName, onDeleteTodo, onCopy }: TodoProps) => {
             },
           }}
         />
-        <p>{text}</p>
+        <p style={{ textDecoration: isChecked ? "line-through" : "none" }}>
+          {text}
+        </p>
       </div>
       <div className="copy-delete flex gap-3">
         <Button

@@ -5,13 +5,20 @@ import {
   handleGroups,
   handleGroupsKeyDown,
 } from "../utils/tools";
+import { Groups } from "../utils/tools";
 const AddTodo = () => {
   const [groupValue, setGroupValue] = useState<string>("");
-  const [groups, setGroups] = useState<string[]>([]);
+  const [groups, setGroups] = useState<Groups>([]);
+  const [groupNames, setGroupNames] = useState<string[]>([]);
+
   useEffect(() => {
     const groups = JSON.parse(localStorage.getItem("groups") || "[]");
     setGroups(groups);
   }, [groups]);
+  useEffect(() => {
+    const groupNames = groups.map((group) => group.groupName);
+    setGroupNames(groupNames);
+  }, [groupNames, groups]);
   return (
     <>
       <Box className="flex gap-12 border-2 border-sky-400 w-96 p-2 rounded-lg mt-10 place-items-top justify-between">
@@ -22,7 +29,14 @@ const AddTodo = () => {
           size="medium"
           variant="standard"
           onKeyDown={(e) =>
-            handleGroupsKeyDown(e, groupValue, groups, setGroups, setGroupValue)
+            handleGroupsKeyDown(
+              e,
+              groupValue,
+              groups,
+              setGroups,
+              setGroupValue,
+              groupNames
+            )
           }
           onChange={(e) => handleGroupInputChange(e, setGroupValue)}
           sx={{

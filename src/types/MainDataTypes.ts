@@ -5,7 +5,7 @@ export type Item = {
 
 export type Group = {
   groupName: string;
-  items: Item[];
+  items?: Item[];
 };
 
 export type GroupItems = Group[];
